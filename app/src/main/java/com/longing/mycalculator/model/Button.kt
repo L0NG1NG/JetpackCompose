@@ -1,6 +1,7 @@
 package com.longing.mycalculator.model
 
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.input.TextFieldValue
@@ -30,6 +31,7 @@ sealed class Button(
 ) {
 
     open fun onClick(data: ScreenData): ScreenData {
+
         return data
     }
 
@@ -38,7 +40,11 @@ sealed class Button(
             val currentExpression = data.inputText.text.plus(text)
             data.outputText =
                 Computer.performCalculate(currentExpression)
-            data.inputText = TextFieldValue(text = currentExpression)
+            data.inputText =
+                TextFieldValue(
+                    text = currentExpression,
+                    selection = TextRange(currentExpression.length)
+                )
             return data
         }
     }
@@ -54,12 +60,14 @@ sealed class Button(
         Button(type.label.toString(), fontColor = LightGreen, fontSize = 34.sp) {
         override fun onClick(data: ScreenData): ScreenData {
             if (operators.any { data.inputText.text.endsWith(it) }) {
-                data.inputText = TextFieldValue(data.inputText.text.dropLast(1).plus(text))
+                val newExpression = data.inputText.text.dropLast(1).plus(text)
+                data.inputText = TextFieldValue(newExpression, TextRange(newExpression.length))
             } else {
                 val currentExpression = data.inputText.text.plus(text)
                 data.outputText =
                     Computer.performCalculate(currentExpression)
-                data.inputText = TextFieldValue(text = currentExpression)
+                data.inputText =
+                    TextFieldValue(currentExpression, TextRange(currentExpression.length))
             }
             return data
         }
@@ -79,7 +87,7 @@ sealed class Button(
             data.outputText = ""
             val result =
                 Computer.performCalculate(data.inputText.text)
-            data.inputText = TextFieldValue(result)
+            data.inputText = TextFieldValue(result, TextRange(result.length))
             return data
         }
     }
