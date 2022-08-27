@@ -1,5 +1,7 @@
-## 就先这样吧 
+## Compose Calculator
 
-没时间了，大概就这样。还有好多东西没搞完/(ㄒoㄒ)/ 
+功能：四则运算
 
-<img src="readme/calculator.gif" alt="效果图" width="220" />
+<img src="readme/screenshot_1.png" alt="输入" width="220" align=left />
+
+<img src="readme/screenshot_2.png" alt="计算结果" width="220" />
