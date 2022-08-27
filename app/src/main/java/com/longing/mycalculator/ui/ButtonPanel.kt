@@ -21,6 +21,7 @@ import com.longing.mycalculator.model.Button
 import com.longing.mycalculator.ui.theme.MyCalculatorTheme
 
 
+//todo 回退键
 private val buttonColumns = listOf(
     listOf(
         Button.Delete(),
@@ -64,7 +65,7 @@ fun ButtonPanel(calculatorData: ScreenData) {
             Column(
                 Modifier
                     .weight(1f)
-                    .fillMaxSize(),
+                    .fillMaxWidth(),
                 verticalArrangement = Arrangement.Bottom
             ) {
                 buttons.forEach { button ->

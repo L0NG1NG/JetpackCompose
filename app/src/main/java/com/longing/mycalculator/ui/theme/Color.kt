@@ -12,4 +12,5 @@ val Background = Color(0XFF000000)
 val LightBlack = Color(0XFF171717)
 val LightGreen = Color(0XFF427E04)
 val Red = Color(0XFFF6546A)
+val CyanBlue=Color(0XFF80CBC4)
 
