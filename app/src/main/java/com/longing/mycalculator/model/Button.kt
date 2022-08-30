@@ -1,6 +1,5 @@
 package com.longing.mycalculator.model
 
-import android.util.Log
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.*
 import androidx.compose.ui.text.font.Font
@@ -10,7 +9,8 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.sp
 import androidx.core.text.isDigitsOnly
 import com.longing.mycalculator.Computer
-import com.longing.mycalculator.ScreenData
+import com.longing.mycalculator.OperatorType
+import com.longing.mycalculator.CalculateData
 import com.longing.mycalculator.R
 import com.longing.mycalculator.ui.theme.LightBlack
 import com.longing.mycalculator.ui.theme.LightGreen
@@ -22,8 +22,6 @@ import com.longing.mycalculator.ui.theme.Red
  * (有现成的图片就好了)
  *
  */
-private const val TAG = "Button"
-
 sealed class Button(
     val text: String,
     val fontColor: Color = Color.White,
@@ -34,31 +32,14 @@ sealed class Button(
     )
 ) {
 
-    open fun onClick(data: ScreenData): ScreenData {
+    open fun onClick(data: CalculateData): CalculateData {
         return data
     }
 
-    companion object {
-        // 分出表达式左右两边内容
-        fun divideExpression(
-            expression: TextFieldValue
-        ): Pair<AnnotatedString, AnnotatedString> {
-            return with(expression) {
-                val cursorIndex = selection.start
-                val left = annotatedString.subSequence(0, cursorIndex)
-                val right = annotatedString.subSequence(
-                    cursorIndex,
-                    if (annotatedString.isNotEmpty()) annotatedString.length else 0
-                )
-                Log.d(TAG, "onClick: left->$left  right->$right")
-                left to right
-            }
-        }
-    }
 
     open class Number(value: String) : Button(value) {
-        override fun onClick(data: ScreenData): ScreenData {
-            val expression = divideExpression(data.inputText)
+        override fun onClick(data: CalculateData): CalculateData {
+            val expression = Computer.divideExpression(data.inputText)
 
             val currentExpression = buildAnnotatedString {
                 if (data.inputText.text.isDigitsOnly()) {
@@ -90,17 +71,17 @@ sealed class Button(
     }
 
     class Delete : Button("C", fontSize = 26.sp, fontColor = Red) {
-        override fun onClick(data: ScreenData): ScreenData {
+        override fun onClick(data: CalculateData): CalculateData {
             data.inputText = TextFieldValue()
             data.outputText = ""
             return data
         }
     }
 
-    class Operator(type: Computer.Operator) :
+    class Operator(type: OperatorType) :
         Button(type.label.toString(), fontColor = LightGreen, fontSize = 34.sp) {
-        override fun onClick(data: ScreenData): ScreenData {
-            val expression = divideExpression(data.inputText)
+        override fun onClick(data: CalculateData): CalculateData {
+            val expression = Computer.divideExpression(data.inputText)
             var left = expression.first
             var right = expression.second
             val newExpression = buildAnnotatedString {
@@ -126,16 +107,16 @@ sealed class Button(
 
         companion object {
             val operators = arrayOf(
-                Computer.Operator.PLUS.label,
-                Computer.Operator.SUBTRACT.label,
-                Computer.Operator.MULTIPLY.label,
-                Computer.Operator.DIVIDE.label,
+                OperatorType.PLUS.label,
+                OperatorType.SUBTRACT.label,
+                OperatorType.MULTIPLY.label,
+                OperatorType.DIVIDE.label,
             )
         }
     }
 
     class Equal : Button("=", backgroundColor = LightGreen, fontSize = 36.sp) {
-        override fun onClick(data: ScreenData): ScreenData {
+        override fun onClick(data: CalculateData): CalculateData {
             data.outputText = ""
             val result =
                 Computer.performCalculate(data.inputText.text).let { str ->
@@ -152,14 +133,14 @@ sealed class Button(
     }
 
     class BRACKET : Button("( )", fontSize = 22.sp, fontColor = LightGreen) {
-        override fun onClick(data: ScreenData): ScreenData {
+        override fun onClick(data: CalculateData): CalculateData {
             //todo 优先级运算
             return super.onClick(data)
         }
     }
 
     class Percent : Button("%", fontSize = 26.sp, fontColor = LightGreen) {
-        override fun onClick(data: ScreenData): ScreenData {
+        override fun onClick(data: CalculateData): CalculateData {
             //todo 小数运算
             return super.onClick(data)
         }

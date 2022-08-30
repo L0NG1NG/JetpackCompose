@@ -11,7 +11,14 @@ import org.junit.Assert.*
  */
 class ExampleUnitTest {
     @Test
-    fun addition_isCorrect() {
-        assertEquals(4, 2 + 2)
+    fun calculator() {
+        val expression = "-2*3+4/2+(-2+1)"
+        val result = Computer.performCalculate(expression)
+        println("计算结果->$result")
+    }
+    @Test
+    fun enum(){
+        val values=OperatorType.values().map { it.label }
+        println("全部运算符->$values")
     }
 }

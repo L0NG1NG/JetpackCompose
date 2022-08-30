@@ -16,12 +16,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import com.longing.mycalculator.Computer
-import com.longing.mycalculator.ScreenData
+import com.longing.mycalculator.CalculateData
+import com.longing.mycalculator.OperatorType
 import com.longing.mycalculator.model.Button
 import com.longing.mycalculator.ui.theme.MyCalculatorTheme
 
-
-//todo 回退键
 private val buttonColumns = listOf(
     listOf(
         Button.Delete(),
@@ -46,17 +45,17 @@ private val buttonColumns = listOf(
     ),
 
     listOf(
-        Button.Operator(Computer.Operator.DIVIDE),
-        Button.Operator(Computer.Operator.MULTIPLY),
-        Button.Operator(Computer.Operator.SUBTRACT),
-        Button.Operator(Computer.Operator.PLUS),
+        Button.Operator(OperatorType.DIVIDE),
+        Button.Operator(OperatorType.MULTIPLY),
+        Button.Operator(OperatorType.SUBTRACT),
+        Button.Operator(OperatorType.PLUS),
         Button.Equal()
     ),
 )
 
 
 @Composable
-fun ButtonPanel(calculatorData: ScreenData) {
+fun ButtonPanel(calculatorData: CalculateData) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -91,11 +90,38 @@ fun ButtonPanel(calculatorData: ScreenData) {
     }
 }
 
+//@Composable
+//fun MenuRow(screenData: ScreenData) {
+//    Row {
+//        Row {
+//
+//        }
+//        IconButton(
+//            modifier = Modifier
+//                .weight(1f)
+//                .fillMaxWidth(),
+//            onClick = {
+//                if (screenData.inputText.text.isNotEmpty()) {
+//                    inputText = TextFieldValue(
+//                        text = inputText.text.substring(0, inputText.text.length - 1)
+//                    )
+//                }
+//                performCalculation()
+//            }) {
+//            Icon(
+//                asset = vectorResource(id = R.drawable.ic_outline_backspace_24),
+//                tint = AppState.theme.primary
+//            )
+//        }
+//    }
+//
+//}
+
 @Preview
 @Composable
 fun ButtonPanelPreview() {
     MyCalculatorTheme {
-        ButtonPanel(ScreenData())
+        ButtonPanel(CalculateData())
     }
 }
 

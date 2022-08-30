@@ -39,6 +39,8 @@ import com.longing.mycalculator.ui.theme.LightGreen
 import com.longing.mycalculator.ui.theme.MyCalculatorTheme
 
 class MainActivity : ComponentActivity() {
+
+    private val calculateData = CalculateData()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         //transparent status bar
@@ -51,7 +53,13 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    Calculator()
+//                    Calculator()
+                    CompositionLocalProvider(
+                        LocalCalculateData provides calculateData
+                    ) {
+                        Calculator()
+
+                    }
                 }
             }
         }
@@ -71,7 +79,7 @@ val textSelectionColors = TextSelectionColors(
 fun Calculator() {
     val orientation = LocalConfiguration.current.orientation
     //remember保证下次重组时数据不进行改变
-    val calculatorData = remember { ScreenData() }
+    val calculatorData = LocalCalculateData.current
 
     val focusRequester = remember { FocusRequester() }
     Column(
@@ -85,7 +93,8 @@ fun Calculator() {
         Column(
             horizontalAlignment = Alignment.End,
             modifier = Modifier
-                .fillMaxWidth().padding(start = 16.dp, end = 16.dp)
+                .fillMaxWidth()
+                .padding(start = 16.dp, end = 16.dp)
         ) {
 
             CompositionLocalProvider(
