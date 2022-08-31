@@ -13,6 +13,9 @@ import com.longing.mycalculator.ui.theme.LightGreen
 
 class OperationButton(type: OperatorType) : Button(type.label.toString(), 36.sp, LightGreen) {
     override fun onClick(data: CalculateData) {
+        if (data.inputText.text.isBlank()) {
+            return
+        }
         val expression = Computer.divideExpression(data.inputText)
         var left = expression.first
         var right = expression.second

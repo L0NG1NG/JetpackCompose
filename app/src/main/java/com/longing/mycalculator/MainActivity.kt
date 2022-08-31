@@ -6,35 +6,28 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.foundation.text.selection.LocalTextSelectionColors
 import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.LocalTextInputService
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextRange
-import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.core.view.WindowCompat
 import com.longing.mycalculator.buttons.*
 import com.longing.mycalculator.ui.ButtonPanel
-import com.longing.mycalculator.ui.theme.*
+import com.longing.mycalculator.ui.DisplayScreen
+import com.longing.mycalculator.ui.theme.Background
+import com.longing.mycalculator.ui.theme.CyanBlue
+import com.longing.mycalculator.ui.theme.LightGreen
+import com.longing.mycalculator.ui.theme.MyCalculatorTheme
 
 class MainActivity : ComponentActivity() {
 
@@ -78,12 +71,10 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-//                    Calculator()
                     CompositionLocalProvider(
                         LocalCalculateData provides calculateData
                     ) {
                         Calculator(buttons)
-
                     }
                 }
             }
@@ -105,86 +96,36 @@ val textSelectionColors = TextSelectionColors(
 @Composable
 fun Calculator(buttons: List<Button>) {
     val orientation = LocalConfiguration.current.orientation
-    //remember保证下次重组时数据不进行改变
-    val calculatorData = LocalCalculateData.current
-
-    val focusRequester = remember { FocusRequester() }
     Column(
         Modifier
             .background(Background)
             .fillMaxSize()
-            .padding(10.dp),
+            .padding(top = 32.dp, start = 12.dp, end = 12.dp, bottom = 12.dp),
         verticalArrangement = Arrangement.Bottom,
     ) {
 
-        Column(
-            horizontalAlignment = Alignment.End,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 16.dp, end = 16.dp)
-        ) {
-
-            CompositionLocalProvider(
-                LocalTextInputService provides null,
-                LocalTextSelectionColors provides textSelectionColors,
+        if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+            DisplayScreen()
+            MenuItems()
+            Box(
+                Modifier
+                    .padding(8.dp)
+                    .height(32.dp)
             ) {
-                //TODO 光标高度太高了 不会调
-                BasicTextField(
-                    value = calculatorData.inputText,
-                    onValueChange = {
-                        calculatorData.inputText = it
-                    },
-                    textStyle = TextStyle(
-                        lineHeight = 38.sp,
-                        fontSize = 46.sp,
-                        fontFamily = robotFontFamily,
-                        textAlign = TextAlign.End
-                    ),
-                    maxLines = 3,
-                    cursorBrush = SolidColor(CyanBlue),
-                    modifier = Modifier
-                        .focusRequester(focusRequester),
+                Spacer(
+                    Modifier
+                        .height(0.8.dp)
+                        .padding(start = 8.dp, end = 8.dp)
+                        .fillMaxWidth()
+                        .background(Color.Gray)
                 )
             }
-            Text(
-                text = calculatorData.outputText, fontSize = 24.sp,
-                fontFamily = robotFontFamily,
-                color = Color.White,
-                textAlign = TextAlign.End,
-                maxLines = 1
-
-            )
-        }
-        if (orientation == Configuration.ORIENTATION_PORTRAIT) {
-            Spacer(Modifier.height(56.dp))
-        }
-        Column {
-            if (orientation == Configuration.ORIENTATION_PORTRAIT) {
-                MenuItems()
-                Box(
-                    Modifier
-                        .padding(8.dp)
-                        .height(32.dp)) {
-                    Spacer(
-                        modifier = Modifier
-                            .height(0.8.dp)
-                            .padding(start = 8.dp, end = 8.dp)
-                            .fillMaxWidth()
-                            .background(Color.Gray)
-                    )
-                }
-                ButtonPanel(buttons)
-
-            } else {
-                Box {
-                    //todo:横屏
-                    Text("TODO")
-                }
+            ButtonPanel(buttons)
+        } else {
+            Box {
+                //todo:横屏
+                Text("TODO")
             }
-        }
-        LaunchedEffect(Unit) {
-            //默认让textFiled有光标在闪
-            focusRequester.requestFocus()
         }
     }
 }
@@ -200,15 +141,20 @@ fun MenuItems() {
         Spacer(modifier = Modifier.weight(0.8f))
         IconButton(modifier = Modifier.weight(0.2f),
             onClick = {
-                val inputText = calculateData.inputText.annotatedString
-                if (inputText.isNotEmpty()) {
-                    val newContent = inputText.subSequence(0, inputText.length - 1)
+                val expression = Computer.divideExpression(calculateData.inputText)
+                var left = expression.first
+                if (left.isNotEmpty()) {
+                    left = left.subSequence(0, left.length - 1)
+                    val newExpression = buildAnnotatedString {
+                        append(left)
+                        append(expression.second)
+                    }
                     calculateData.inputText = TextFieldValue(
-                        annotatedString = newContent,
-                        TextRange(newContent.length)
+                        annotatedString = newExpression,
+                        TextRange(left.length)
                     )
+                    Computer.performCalculate(calculateData.inputText.text)
                 }
-                Computer.performCalculate(calculateData.inputText.text)
             }) {
             Icon(
                 painter = painterResource(R.drawable.ic_outline_backspace_24),
