@@ -7,7 +7,7 @@ import com.longing.mycalculator.exprk.Expressions
 import java.math.RoundingMode
 
 enum class OperatorType(val label: Char) {
-    PLUS('+'), SUBTRACT('-'), MULTIPLY('×'), DIVIDE('÷'),
+    PLUS('+'), SUBTRACT('–'), MULTIPLY('×'), DIVIDE('÷'),
 }
 
 object Computer {
@@ -19,6 +19,7 @@ object Computer {
         val finalExpression = expressions
             .replace(OperatorType.MULTIPLY.label, '*')
             .replace(OperatorType.DIVIDE.label, '/')
+            .replace(OperatorType.SUBTRACT.label,'-')
 
         if (!operators.any { finalExpression.contains(it) }) {
             return ""

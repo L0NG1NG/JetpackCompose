@@ -9,9 +9,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.selection.LocalTextSelectionColors
 import androidx.compose.foundation.text.selection.TextSelectionColors
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
@@ -24,23 +22,50 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalTextInputService
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.view.WindowCompat
+import com.longing.mycalculator.buttons.*
 import com.longing.mycalculator.ui.ButtonPanel
-import com.longing.mycalculator.ui.theme.Background
-import com.longing.mycalculator.ui.theme.CyanBlue
-import com.longing.mycalculator.ui.theme.LightGreen
-import com.longing.mycalculator.ui.theme.MyCalculatorTheme
+import com.longing.mycalculator.ui.theme.*
 
 class MainActivity : ComponentActivity() {
 
+    private val buttons = listOf(
+        ClearButton(),
+        BracketButton(),
+        PercentButton(),
+        OperationButton(OperatorType.DIVIDE),
+
+        NumberButton(7),
+        NumberButton(8),
+        NumberButton(9),
+        OperationButton(OperatorType.MULTIPLY),
+
+        NumberButton(4),
+        NumberButton(5),
+        NumberButton(6),
+        OperationButton(OperatorType.SUBTRACT),
+
+        NumberButton(1),
+        NumberButton(2),
+        NumberButton(3),
+        OperationButton(OperatorType.PLUS),
+
+        NegativeButton(),
+        NumberButton(0),
+        DotButton(),
+        EqualButton()
+    )
     private val calculateData = CalculateData()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         //transparent status bar
@@ -57,7 +82,7 @@ class MainActivity : ComponentActivity() {
                     CompositionLocalProvider(
                         LocalCalculateData provides calculateData
                     ) {
-                        Calculator()
+                        Calculator(buttons)
 
                     }
                 }
@@ -65,6 +90,7 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
+
 
 val robotFontFamily = FontFamily(
     Font(R.font.roboto_light)
@@ -75,8 +101,9 @@ val textSelectionColors = TextSelectionColors(
     backgroundColor = LightGreen.copy(alpha = 0.3f)
 )
 
+
 @Composable
-fun Calculator() {
+fun Calculator(buttons: List<Button>) {
     val orientation = LocalConfiguration.current.orientation
     //remember保证下次重组时数据不进行改变
     val calculatorData = LocalCalculateData.current
@@ -131,9 +158,23 @@ fun Calculator() {
         if (orientation == Configuration.ORIENTATION_PORTRAIT) {
             Spacer(Modifier.height(56.dp))
         }
-        Box {
+        Column {
             if (orientation == Configuration.ORIENTATION_PORTRAIT) {
-                ButtonPanel(calculatorData)
+                MenuItems()
+                Box(
+                    Modifier
+                        .padding(8.dp)
+                        .height(32.dp)) {
+                    Spacer(
+                        modifier = Modifier
+                            .height(0.8.dp)
+                            .padding(start = 8.dp, end = 8.dp)
+                            .fillMaxWidth()
+                            .background(Color.Gray)
+                    )
+                }
+                ButtonPanel(buttons)
+
             } else {
                 Box {
                     //todo:横屏
@@ -148,12 +189,33 @@ fun Calculator() {
     }
 }
 
-
-@Preview
 @Composable
-fun DefaultPreview() {
-    MyCalculatorTheme {
-        Calculator()
+fun MenuItems() {
+    Row(
+        Modifier
+            .fillMaxWidth()
+            .padding(2.dp)
+    ) {
+        val calculateData = LocalCalculateData.current
+        Spacer(modifier = Modifier.weight(0.8f))
+        IconButton(modifier = Modifier.weight(0.2f),
+            onClick = {
+                val inputText = calculateData.inputText.annotatedString
+                if (inputText.isNotEmpty()) {
+                    val newContent = inputText.subSequence(0, inputText.length - 1)
+                    calculateData.inputText = TextFieldValue(
+                        annotatedString = newContent,
+                        TextRange(newContent.length)
+                    )
+                }
+                Computer.performCalculate(calculateData.inputText.text)
+            }) {
+            Icon(
+                painter = painterResource(R.drawable.ic_outline_backspace_24),
+                "删除",
+                tint = LightGreen
+            )
+        }
     }
 }
 
