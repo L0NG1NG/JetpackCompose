@@ -1,6 +1,5 @@
 package com.longing.mycalculator.buttons
 
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.buildAnnotatedString
@@ -18,7 +17,7 @@ class NumberButton(number: Int) :
         val currentExpression = buildAnnotatedString {
             if (data.inputText.text.isDigitsOnly()) {
                 //置为白色样式
-                withStyle(style = SpanStyle(Color.White)) {
+                withStyle(style = SpanStyle(color)) {
                     append(expression.first)
                     append(label)
                     append(expression.second)
@@ -26,7 +25,7 @@ class NumberButton(number: Int) :
             } else {
                 //是个表达式,使用原来的输入样式
                 append(expression.first)
-                withStyle(style = SpanStyle(Color.White)) {
+                withStyle(style = SpanStyle(color)) {
                     append(label)
                 }
                 append(expression.second)

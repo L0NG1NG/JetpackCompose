@@ -105,7 +105,8 @@ fun Calculator(buttons: List<Button>) {
     ) {
 
         if (orientation == Configuration.ORIENTATION_PORTRAIT) {
-            DisplayScreen()
+            DisplayScreen(Modifier.weight(1f))
+            Spacer(Modifier.height(16.dp))
             MenuItems()
             Box(
                 Modifier

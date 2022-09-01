@@ -1,5 +1,7 @@
 package com.longing.mycalculator.ui
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -14,7 +16,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Paint
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalTextInputService
 import androidx.compose.ui.text.TextStyle
@@ -25,18 +29,22 @@ import com.longing.mycalculator.LocalCalculateData
 import com.longing.mycalculator.robotFontFamily
 import com.longing.mycalculator.textSelectionColors
 import com.longing.mycalculator.ui.theme.CyanBlue
+import com.longing.mycalculator.ui.theme.LightBlack
 
 
 @Composable
-fun DisplayScreen() {
+fun DisplayScreen(modifier: Modifier) {
     //remember保证下次重组时数据不进行改变
     val focusRequester = remember { FocusRequester() }
     val calculatorData = LocalCalculateData.current
     Column(
+        verticalArrangement = Arrangement.SpaceBetween,
         horizontalAlignment = Alignment.End,
         modifier = Modifier
             .fillMaxWidth()
+            .then(modifier)
             .padding(start = 16.dp, end = 16.dp)
+
     ) {
         CompositionLocalProvider(
             LocalTextInputService provides null,
@@ -62,7 +70,7 @@ fun DisplayScreen() {
         Text(
             text = calculatorData.outputText, fontSize = 24.sp,
             fontFamily = robotFontFamily,
-            color = Color.White,
+            color = Color.Gray,
             textAlign = TextAlign.End,
             maxLines = 1
         )

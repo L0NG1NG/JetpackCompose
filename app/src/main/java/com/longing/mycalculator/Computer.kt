@@ -30,7 +30,7 @@ object Computer {
         val eval = Expressions().eval(finalExpression)
 
         return if (eval.toString().contains(".")) {
-            val rounded = eval.setScale(10, RoundingMode.UP).stripTrailingZeros()
+            val rounded = eval.setScale(3, RoundingMode.UP).stripTrailingZeros()
             rounded.toString()
         } else {
             eval.toString()

@@ -27,7 +27,7 @@ class OperationButton(type: OperatorType) : Button(type.label.toString(), 36.sp,
                 right = right.subSequence(1, right.length)
             }
             append(left)
-            withStyle(style = SpanStyle(LightGreen)) {
+            withStyle(style = SpanStyle(color)) {
                 append(label)
             }
             append(right)
