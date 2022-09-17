@@ -38,14 +38,11 @@ class DotButton : Button(label = ".", fontSize = 28.sp) {
         var startIndex = -1
         var endIndex = -1
         OperatorType.values().forEach {
-            if (startIndex < 0) {
-                val index = left.text.lastIndexOf(it.label)
-                if (index > startIndex) startIndex = index
-            }
-            if (endIndex < 0) {
-                val index = right.text.lastIndexOf(it.label)
-                if (index > endIndex) endIndex = index
-            }
+            val i = left.text.lastIndexOf(it.label)
+            if (i > startIndex) startIndex = i
+
+            val j = right.text.lastIndexOf(it.label)
+            if (j > endIndex) endIndex = j
         }
 
         if (endIndex < 0) {
