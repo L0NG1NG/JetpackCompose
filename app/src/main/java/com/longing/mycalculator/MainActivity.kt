@@ -1,12 +1,14 @@
 package com.longing.mycalculator
 
 import android.content.res.Configuration
+import android.os.Build
 import android.os.Bundle
+import android.view.View
+import android.view.WindowInsets
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -16,8 +18,6 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.font.Font
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
@@ -25,7 +25,6 @@ import com.longing.mycalculator.buttons.*
 import com.longing.mycalculator.ui.ButtonPanel
 import com.longing.mycalculator.ui.DisplayScreen
 import com.longing.mycalculator.ui.theme.Background
-import com.longing.mycalculator.ui.theme.CyanBlue
 import com.longing.mycalculator.ui.theme.LightGreen
 import com.longing.mycalculator.ui.theme.MyCalculatorTheme
 
@@ -62,9 +61,16 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         //transparent status bar
-        WindowCompat.setDecorFitsSystemWindows(window, false)
-        window.statusBarColor = Color.Transparent.value.toInt()
-
+        window.apply {
+            WindowCompat.setDecorFitsSystemWindows(this, false)
+            statusBarColor = Color.Transparent.value.toInt()
+            decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                decorView.windowInsetsController?.hide(WindowInsets.Type.navigationBars())
+            } else {
+                decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+            }
+        }
         setContent {
             MyCalculatorTheme {
                 Surface(
@@ -81,17 +87,6 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
-
-
-val robotFontFamily = FontFamily(
-    Font(R.font.roboto_light)
-)
-
-val textSelectionColors = TextSelectionColors(
-    handleColor = CyanBlue,
-    backgroundColor = LightGreen.copy(alpha = 0.3f)
-)
-
 
 @Composable
 fun Calculator(buttons: List<Button>) {

@@ -28,7 +28,7 @@ class DotButton : Button(label = ".", fontSize = 28.sp) {
             val left = expression.first
             val right = expression.second
 
-            var number: String? = null
+            val number: String
             var startIndex = -1
             var endIndex = -1
 
@@ -42,21 +42,20 @@ class DotButton : Button(label = ".", fontSize = 28.sp) {
                     if (index > endIndex) endIndex = index
                 }
             }
-            if (startIndex == left.length) {
-                TODO("光标前面刚好是运算符")
+            Log.d(TAG, "startIndex: $startIndex")
+            Log.d(TAG, "endIndex: $endIndex")
 
-            } else if (endIndex == left.length + 1) {
-                TODO("光标后面刚好是运算符")
+            if (startIndex == left.length-1) {
+                //"光标前面刚好是运算符补0
+                number = left.text + "0$label" + right.text
+
             } else if (startIndex < 0) {
-                if (endIndex < 0) {
+                number = if (endIndex < 0) {
                     //纯纯的数字
-                    number = inputText.text
-
+                    inputText.text
 
                 } else {
-                    number = left.text + right.text.subSequence(0, endIndex)
-                    Log.d(TAG, "当前所指数字: -->$number")
-
+                    left.text + right.text.subSequence(0, endIndex)
                 }
             } else {
                 number = if (endIndex > 0) {
@@ -68,25 +67,21 @@ class DotButton : Button(label = ".", fontSize = 28.sp) {
                 } else {
                     inputText.text.subSequence(startIndex, left.length + endIndex).toString()
                 }
-
-
             }
-            number?.let {
-                if (!it.contains(label)) {
-                    val newExpression = buildAnnotatedString {
-                        append(left)
-                        withStyle(SpanStyle(color)) {
-                            append(label)
-                        }
-                        append(right)
+
+            if (number.contains(label)) {
+                val newExpression = buildAnnotatedString {
+                    append(left)
+                    withStyle(SpanStyle(color)) {
+                        append(label)
                     }
-                    data.inputText =
-                        TextFieldValue(newExpression, TextRange(left.length + 1))
-                    data.outputText =
-                        Computer.performCalculate(newExpression.text)
+                    append(right)
                 }
+                data.inputText =
+                    TextFieldValue(newExpression, TextRange(left.length + 1))
+                data.outputText =
+                    Computer.performCalculate(newExpression.text)
             }
-
         }
     }
 }
