@@ -3,6 +3,7 @@ package com.longing.mycalculator
 import android.util.Log
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.input.TextFieldValue
+import com.longing.mycalculator.buttons.PercentButton
 import com.longing.mycalculator.exprk.Expressions
 import java.math.RoundingMode
 
@@ -20,6 +21,7 @@ object Computer {
             .replace(OperatorType.MULTIPLY.label, '*')
             .replace(OperatorType.DIVIDE.label, '/')
             .replace(OperatorType.SUBTRACT.label,'-')
+            .replace(PercentButton.label, "/100")//简单粗暴
 
         if (!operators.any { finalExpression.contains(it) }) {
             return ""

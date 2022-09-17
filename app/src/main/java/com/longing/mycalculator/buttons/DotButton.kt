@@ -30,15 +30,13 @@ class DotButton : Button(label = ".", fontSize = 28.sp) {
             return
         }
 
-        var startIndex = -1
-        var endIndex = -1
-
-        //判断数字有没有小数点
         val expression = Computer.divideExpression(inputText)
         val left = expression.first
         val right = expression.second
         val cursorIndex = left.length
 
+        var startIndex = -1
+        var endIndex = -1
         OperatorType.values().forEach {
             if (startIndex < 0) {
                 val index = left.text.lastIndexOf(it.label)
