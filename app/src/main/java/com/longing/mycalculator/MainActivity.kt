@@ -110,8 +110,8 @@ fun Calculator(buttons: List<Button>) {
             ) {
                 Spacer(
                     Modifier
-                        .height(0.8.dp)
-                        .padding(start = 8.dp, end = 8.dp)
+                        .height(0.4.dp)
+                        .padding(start = 6.dp, end = 6.dp)
                         .fillMaxWidth()
                         .background(Color.Gray)
                 )
