@@ -6,10 +6,7 @@ import androidx.compose.foundation.text.selection.LocalTextSelectionColors
 import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
@@ -32,19 +29,37 @@ import com.longing.mycalculator.ui.theme.CyanBlue
 import com.longing.mycalculator.ui.theme.LightGreen
 import com.longing.mycalculator.ui.theme.MyCalculatorTheme
 
-private val textSelectionColors = TextSelectionColors(
-    handleColor = CyanBlue,
-    backgroundColor = LightGreen.copy(alpha = 0.3f)
-)
-private val robotFontFamily = FontFamily(
-    Font(R.font.roboto_light)
-)
 
 @Composable
 fun DisplayScreen(modifier: Modifier) {
     //remember保证下次重组时数据不进行改变
-    val focusRequester = remember { FocusRequester() }
+    val focusRequester by remember { mutableStateOf(FocusRequester()) }
+    val robotFontFamily by remember {
+        mutableStateOf(
+            FontFamily(
+                Font(R.font.roboto_light)
+            )
+        )
+    }
+    val textSelectionColors by remember {
+        mutableStateOf(
+            TextSelectionColors(
+                handleColor = CyanBlue,
+                backgroundColor = LightGreen.copy(alpha = 0.3f)
+            )
+        )
+    }
     val calculatorData = LocalCalculateData.current
+    val fontSize = when (calculatorData.inputText.text.length) {
+        in 0..12 -> {
+            40.sp
+        }
+        in 13..16 -> {
+            30.sp
+        }
+        else -> 24.sp
+    }
+
     Column(
         verticalArrangement = Arrangement.SpaceBetween,
         horizontalAlignment = Alignment.End,
@@ -59,16 +74,7 @@ fun DisplayScreen(modifier: Modifier) {
             LocalTextInputService provides null,
             LocalTextSelectionColors provides textSelectionColors,
         ) {
-            val fontSize =
-                when (calculatorData.inputText.text.length) {
-                    in 0..12 -> {
-                        40.sp
-                    }
-                    in 13..16 -> {
-                        30.sp
-                    }
-                    else -> 24.sp
-                }
+
 
             Box(modifier = Modifier.weight(1f), contentAlignment = Alignment.Center) {
                 BasicTextField(

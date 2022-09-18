@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
@@ -21,6 +22,8 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelStore
 import com.longing.mycalculator.buttons.*
 import com.longing.mycalculator.ui.ButtonPanel
 import com.longing.mycalculator.ui.DisplayScreen
@@ -29,34 +32,6 @@ import com.longing.mycalculator.ui.theme.LightGreen
 import com.longing.mycalculator.ui.theme.MyCalculatorTheme
 
 class MainActivity : ComponentActivity() {
-
-    private val buttons = listOf(
-        ClearButton(),
-        BracketButton(),
-        PercentButton(),
-        OperationButton(OperatorType.DIVIDE),
-
-        NumberButton(7),
-        NumberButton(8),
-        NumberButton(9),
-        OperationButton(OperatorType.MULTIPLY),
-
-        NumberButton(4),
-        NumberButton(5),
-        NumberButton(6),
-        OperationButton(OperatorType.SUBTRACT),
-
-        NumberButton(1),
-        NumberButton(2),
-        NumberButton(3),
-        OperationButton(OperatorType.PLUS),
-
-        NegativeButton(),
-        NumberButton(0),
-        DotButton(),
-        EqualButton()
-    )
-    private val calculateData = CalculateData()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -71,16 +46,19 @@ class MainActivity : ComponentActivity() {
                 decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
             }
         }
+        val viewModel = ViewModelProvider(this)[CalculateViewModel::class.java]
+
         setContent {
             MyCalculatorTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
+
                     CompositionLocalProvider(
-                        LocalCalculateData provides calculateData
+                        LocalCalculateData provides viewModel.calculateData
                     ) {
-                        Calculator(buttons)
+                        Calculator(viewModel.buttons)
                     }
                 }
             }
