@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.selection.LocalTextSelectionColors
 import androidx.compose.foundation.text.selection.TextSelectionColors
-import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -50,6 +49,7 @@ fun DisplayScreen(modifier: Modifier) {
         )
     }
     val calculatorData = LocalCalculateData.current
+    //TODO ↓ ？？
     val fontSize = when (calculatorData.inputText.text.length) {
         in 0..12 -> {
             40.sp
