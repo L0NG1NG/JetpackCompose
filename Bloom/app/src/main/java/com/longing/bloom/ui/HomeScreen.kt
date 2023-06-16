@@ -5,13 +5,15 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.paddingFromBaseline
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
@@ -23,7 +25,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationRailItem
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -42,9 +44,10 @@ import com.longing.bloom.ui.theme.h1
 import com.longing.bloom.ui.theme.h2
 import com.longing.bloom.ui.theme.pink100
 import com.longing.bloom.ui.theme.white
+import com.longing.bloom.ui.theme.white850
 
 
-val bloomBannerList = listOf(
+val plantThemeList = listOf(
     "Desert chic" to R.drawable.desert_chic,
     "Tiny terrariums" to R.drawable.tiny_terrariums,
     "Jungle Vibes" to R.drawable.jungle_vibes
@@ -86,7 +89,7 @@ fun HomeScreen() {
                     .padding(horizontal = 16.dp)
             ) {
                 SearchBar()
-                BloomRowBanner()
+                BrowseThemesSection()
                 BloomInfoList()
             }
         }
@@ -112,11 +115,12 @@ private fun SearchBar() {
 }
 
 @Composable
-fun PlantCard(name: String, @DrawableRes plantResId: Int) {
+fun PlantThemeCard(name: String, @DrawableRes plantResId: Int) {
     Card(
         modifier = Modifier
             .size(136.dp)
             .clip(RoundedCornerShape(4.dp))
+
     ) {
         Column {
             Image(
@@ -129,7 +133,9 @@ fun PlantCard(name: String, @DrawableRes plantResId: Int) {
             Box(
                 Modifier
                     .fillMaxWidth()
+                    .background(white850)
                     .padding(horizontal = 16.dp)
+
             ) {
                 Text(
                     text = name,
@@ -146,7 +152,7 @@ fun PlantCard(name: String, @DrawableRes plantResId: Int) {
 }
 
 @Composable
-private fun BloomRowBanner() {
+private fun BrowseThemesSection() {
     Column {
         Box(modifier = Modifier.fillMaxWidth()) {
             Text(
@@ -156,7 +162,17 @@ private fun BloomRowBanner() {
                 modifier = Modifier.paddingFromBaseline(top = 32.dp)
             )
         }
-
+        Spacer(modifier = Modifier.height(16.dp))
+        LazyRow(modifier = Modifier.height(136.dp)) {
+            items(plantThemeList.size) { index ->
+                if (index != 0) {
+                    Spacer(modifier = Modifier.width(8.dp))
+                }
+                plantThemeList[index].also {
+                    PlantThemeCard(it.first, it.second)
+                }
+            }
+        }
     }
 }
 
@@ -174,15 +190,16 @@ private fun BottomBar() {
         containerColor = pink100
     ) {
         navList.forEach {
-            NavigationBarItem(
+            NavigationRailItem(
                 selected = false,
                 onClick = { },
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(vertical = 4.dp),
                 icon = {
                     Icon(it.second, contentDescription = null, modifier = Modifier.size(24.dp))
                 },
-                label = {
-                    Text(text = it.first, style = caption, color = gray)
-                },
+                label = { Text(text = it.first, style = caption, color = gray) },
             )
         }
     }
