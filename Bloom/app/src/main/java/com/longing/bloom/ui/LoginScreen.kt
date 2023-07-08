@@ -25,6 +25,8 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.longing.bloom.ui.theme.BloomTheme
 import com.longing.bloom.ui.theme.Shapes
 import com.longing.bloom.ui.theme.body1
@@ -36,7 +38,7 @@ import com.longing.bloom.ui.theme.pink900
 import com.longing.bloom.ui.theme.white
 
 @Composable
-fun LoginScreen() {
+fun LoginScreen(navController: NavController) {
     Column(
         Modifier
             .fillMaxSize()
@@ -46,7 +48,7 @@ fun LoginScreen() {
         LoginHeader()
         LoginInputBox()
         TermsOfServiceLabel()
-        LoginButton()
+        LoginButton(navController)
 
     }
 
@@ -99,9 +101,13 @@ fun TermsOfServiceLabel() {
 
 
 @Composable
-fun LoginButton() {
+fun LoginButton(navController: NavController) {
     Button(
-        onClick = { },
+        onClick = {
+            navController.navigate("home") {
+                popUpTo("welcome") { inclusive = true }
+            }
+        },
         shape = Shapes.medium,
         modifier = Modifier
             .height(48.dp)
@@ -137,7 +143,7 @@ fun LoginTextField(placeHolder: String) {
 @Composable
 fun LoginScreenPrev() {
     BloomTheme {
-        LoginScreen()
+        LoginScreen(rememberNavController())
     }
 
 }

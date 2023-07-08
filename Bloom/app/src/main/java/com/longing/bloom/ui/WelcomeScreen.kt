@@ -25,6 +25,8 @@ import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.longing.bloom.R
 import com.longing.bloom.ui.theme.BloomTheme
 import com.longing.bloom.ui.theme.Shapes
@@ -36,7 +38,7 @@ import com.longing.bloom.ui.theme.subtitle1
 import com.longing.bloom.ui.theme.white
 
 @Composable
-fun WelcomeScreen() {
+fun WelcomeScreen(navController: NavController) {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -47,28 +49,30 @@ fun WelcomeScreen() {
             contentDescription = "welcome bg",
             modifier = Modifier.fillMaxSize()
         )
-        WelcomeContent()
+        WelcomeContent(navController)
     }
 }
 
 @Composable
-fun WelcomeContent() {
+fun WelcomeContent(navController: NavController) {
     Column(modifier = Modifier.fillMaxSize()) {
         Spacer(modifier = Modifier.height(72.dp))
         LeafImage()
         Spacer(modifier = Modifier.height(48.dp))
         WelcomeTitle()
         Spacer(modifier = Modifier.height(40.dp))
-        WelcomeButtons()
+        WelcomeButtons(navController)
     }
 
 }
 
 @Composable
-fun WelcomeButtons() {
+fun WelcomeButtons(navController: NavController) {
     Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth()) {
         Button(
-            onClick = {},
+            onClick = {
+
+            },
             shape = Shapes.medium,
             modifier = Modifier
                 .height(48.dp)
@@ -84,7 +88,9 @@ fun WelcomeButtons() {
 
         }
         Spacer(modifier = Modifier.height(24.dp))
-        TextButton(onClick = {}) {
+        TextButton(onClick = {
+            navController.navigate("login")
+        }) {
             Text(
                 text = "Log in",
                 style = button,
@@ -143,6 +149,6 @@ fun LeafImage() {
 @Composable
 private fun WelcomeScreenPreview() {
     BloomTheme {
-        WelcomeScreen()
+        WelcomeScreen(rememberNavController())
     }
 }
