@@ -3,8 +3,11 @@ package com.longing.bloom.ui
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -13,11 +16,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.paddingFromBaseline
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material.icons.filled.FilterList
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.ShoppingCart
@@ -30,6 +35,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
@@ -90,7 +96,7 @@ fun HomeScreen() {
             ) {
                 SearchBar()
                 BrowseThemesSection()
-                BloomInfoList()
+                BloomInfoSection()
             }
         }
     }
@@ -177,7 +183,36 @@ private fun BrowseThemesSection() {
 }
 
 @Composable
-private fun BloomInfoList() {
+private fun BloomInfoSection() {
+    Column {
+        Row(
+            Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.Bottom,
+        ) {
+            Text(
+                text = "Design your garden",
+                style = h1,
+                color = gray,
+                modifier = Modifier
+                    .paddingFromBaseline(top = 40.dp)
+                    .weight(1f)
+            )
+            Icon(
+                imageVector = Icons.Default.FilterList, contentDescription = "Filter",
+                modifier = Modifier.size(24.dp)
+            )
+        }
+        LazyColumn(modifier = Modifier.fillMaxWidth().padding(top = 8.dp)) {
+            items(bloomInfoList.size) {
+                if (it != 0) {
+                    Spacer(modifier = Modifier.height(8.dp))
+                    BloomInfoListItem(item = bloomInfoList[it])
+                }
+            }
+
+        }
+    }
+
 
 }
 
